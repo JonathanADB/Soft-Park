@@ -16,7 +16,6 @@ El proyecto se centra en proporcionar recursos y herramientas que faciliten el d
 - Interfaz de usuario intuitiva y amigable, desarrollada con Vue.js.
 - API RESTful construida con Flask para manejar la lógica del servidor y la gestión de datos.
 - Recursos educativos interactivos y dinámicos.
-- Espacios para la colaboración y el intercambio de experiencias entre los usuarios.
 
 ## Instalación
 
