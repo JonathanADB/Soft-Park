@@ -4,8 +4,6 @@ import vue from '@vitejs/plugin-vue';
 
 export default defineConfig({
   plugins: [vue()],
-  base: 'https://JonathanADB.github.io/Soft-Park/', // URL de tu repositorio
-  build: {
-    outDir: 'dist' // Directorio de salida
-  }
+  base: 'https://JonathanADB.github.io/Soft-Park/frontend/', // URL de tu repositorio
+
 });
