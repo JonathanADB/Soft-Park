@@ -1,51 +1,58 @@
-# Flujo de trabajo simple para implementar contenido estático en Github Pages
 name: Implementar contenido estático a Pages
 
 on:
-  # Se ejecuta en anotaciones dirigidas a la rama predeterminada
   push:
-    branches: ['main']
+    branches: ['main']  # Ejecuta este flujo de trabajo en cada push a la rama 'main'
+  workflow_dispatch:     # Permite ejecutar manualmente el flujo de trabajo desde la pestaña de Actions
 
-  # Te permite ejecutar este flujo de trabajo manualmente desde la pestaña Acciones
-  workflow_dispatch:
-
-# Establece los permisos de GITHUB_TOKEN para permitir la implementación en GitHub Pages
 permissions:
-  contents: read
-  pages: write
-  id-token: write
+  contents: read         # Permisos para leer el contenido del repositorio
+  pages: write           # Permisos para escribir en GitHub Pages
+  id-token: write        # Permisos para generar tokens de ID
 
-# Permite una implementación simultánea
 concurrency:
-  group: 'pages'
-  cancel-in-progress: true
+  group: 'pages'         # Agrupa las ejecuciones para evitar que haya varias implementaciones a la vez
+  cancel-in-progress: true  # Cancela una ejecución en curso si se inicia una nueva
 
 jobs:
-  # Trabajo de implementación único ya que solo estamos implementando
   deploy:
     environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
+      name: github-pages  # Nombre del entorno de despliegue
+      url: ${{ steps.deployment.outputs.page_url }}  # URL generada al finalizar el despliegue
+    runs-on: ubuntu-latest  # Define el entorno de ejecución como Ubuntu
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        # Hacer checkout del código para obtener el contenido del repositorio
+
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
-          node-version: 20
-          cache: 'npm'
+          node-version: 20    # Configurar Node.js en la versión 20
+          cache: 'npm'        # Cachear dependencias de npm para acelerar futuras ejecuciones
+
       - name: Install dependencies
+        working-directory: frontend
         run: npm ci
+        # Cambiar al directorio 'frontend' e instalar las dependencias con `npm ci`
+
       - name: Build
+        working-directory: frontend
         run: npm run build
+        # Ejecutar `npm run build` en el directorio 'frontend' para generar los archivos en 'dist'
+
       - name: Setup Pages
         uses: actions/configure-pages@v4
+        # Configurar GitHub Pages para recibir el artefacto generado
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Upload dist folder
-          path: './dist'
+          path: './frontend/dist'  # Ruta a la carpeta generada con los archivos estáticos
+        # Subir el contenido de 'frontend/dist' como un artefacto para su despliegue
+
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+        # Desplegar el artefacto en GitHub Pages
